@@ -12,7 +12,6 @@ def main():
     while choice.upper() != "Q":
         print(
             "Menu:\nR - List required items\nC - List completed items\nA - Add new item\nM - Mark an item as completed\nQ - Quit")
-
         choice = input(">>> ")
 
         if choice.upper() == "A":
