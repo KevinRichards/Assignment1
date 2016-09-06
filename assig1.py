@@ -1,4 +1,11 @@
 def main():
+    '''
+    #Pseudocode for loading items
+   open “items.csv” as fileIn for reading
+    get items data from fileIn
+    put items data into list
+    close fileIn
+    '''
     import csv
     items_list = []
     file_open = open('items.csv')
@@ -21,6 +28,25 @@ def main():
 
             items_list += [[name, price, priority, 'r']]
             print("{}, ${:.2f} (priority {}) added to shopping list".format(name, price, priority))
+        '''
+        if menu_choice = M
+            sort items list by item priority
+            for each item in items list
+                if item is required
+                    display item details
+                    add item to required items list
+                    add item price to expected price
+                otherwise
+                    add item to completed items list
+            if nothing in required items list
+                display "No required items"
+            otherwise
+                display expected price for required items
+            get item to set as completed as index given by display
+            set indexed item in required items list to complete
+            item list = required items list + completed items list
+            display item is completed
+        '''
 
         else:
             print("Invalid menu choice")
