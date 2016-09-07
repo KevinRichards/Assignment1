@@ -13,13 +13,38 @@ https://github.com/KevinRichards/Assignment1
 def main():
     print("Shopping List 1.0 - by Kevin Richards")
     items_list = file_load()
+    print(items_list)
     choice = get_user_choice()
     while choice.upper() != "Q":
+
         if choice.upper() == "A":
             name = input("Item name: ")
-            price = float(input("Price: $"))
-            priority = int(input("Priority (1 - 3, 1 being high): "))
-            items_list += [[name, price, priority, 'r']]
+            while name == "":
+                print("Input can not be blank")
+                name = input("Item name: ")
+            finished = False
+            while finished == False:
+                try:
+                    price = float(input("Price: $"))
+                    price >= 0
+                    price != ""
+                    finished = True
+                except ValueError:
+                    print("Invalid input; enter a valid number")
+                except:
+                    print("Price must be >=$0")
+            finished = False
+            while finished == False:
+                try:
+                    priority = int(input("Priority (1 - 3, 1 being high): "))
+                    1 <= priority <= 3
+                    priority != ""
+                    finished = True
+                except ValueError:
+                    print("Invalid input; enter a valid number")
+                except:
+                    print("Priority must be 1, 2 or 3")
+            items_list += [[name, str(price), str(priority), 'r']]
             print("{}, ${:.2f} (priority {}) added to shopping list".format(name, price, priority))
 
         elif choice.upper() == "C":
@@ -30,8 +55,7 @@ def main():
             print("Required items:")
             complete_required(items_list, 'r')
 
-            '''
-            if menu_choice = M
+            """if menu_choice = M
                 sort items list by item priority
                 for each item in items list
                     if item is required
@@ -47,13 +71,22 @@ def main():
                 get item to set as completed as index given by display
                 set indexed item in required items list to complete
                 item list = required items list + completed items list
-                display item is completed
-            '''
+                display item is completed"""
+
         elif choice.upper() == "M":
             items_list = complete_required(items_list, 'r')
             if items_list[-1] != 0:
                 print("Enter the number of an item to mark as completed")
-                complete_off = input(">>> ")
+                finished = False
+                while finished == False:
+                    try:
+                        complete_off = input(">>> ")
+                        0 <= complete_off < items_list[-1]
+                        finished = True
+                    except ValueError:
+                        print("Invalid input; enter a number")
+                    except:
+                        print("Invalid item number")
                 items_list[int(complete_off)][3] = 'c'
                 items_list = items_list[0:-1]
                 print("{} marked as completed".format(items_list[int(complete_off)][0]))
@@ -107,24 +140,23 @@ def file_load():
       put items data into list
       close fileIn
       """
+
     import csv
     items_list = []
     file_open = open('items.csv')
-    with file_open as csvfile:
-        readCSV = csv.reader(csvfile, delimiter=',')
-        for row in readCSV:
-            items_list += [row]
+    file_read = csv.reader(file_open, delimiter=',')
+    for row in file_read:
+        items_list += [row]
     file_open.close()
     print("{} items loaded from items.csv".format(len(items_list)))
     return items_list
 
 def file_save(array):
     import csv
-    file_save = open('items.csv', 'w', newline='')
-    with file_save as csvfile:
-        for i in array:
-            write = csv.writer(file_save)
-            write.writerow(i)
+    file_save = open('items.csv', 'w')
+    for item in array:
+        write = csv.writer(file_save)
+        write.writerow(item)
     file_save.close()
     print("{} items saved to items.csv".format(len(array)))
 def get_user_choice():
