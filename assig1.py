@@ -9,47 +9,26 @@ or which have already been completed, check off items as completed
 https://github.com/KevinRichards/Assignment1
 """
 
+
 def main():
-    """
-    #Pseudocode for loading items
-   open “items.csv” as fileIn for reading
-    get items data from fileIn
-    put items data into list
-    close fileIn
-    """
-    import csv
-    items_list = []
-    file_open = open('items.csv')
-    with file_open as csvfile:
-        readCSV = csv.reader(csvfile, delimiter=',')
-        for row in readCSV:
-            items_list += [row]
-    file_open.close()
-    choice = ""
-
+    print("Shopping List 1.0 - by Kevin Richards")
+    items_list = file_load()
+    choice = get_user_choice()
     while choice.upper() != "Q":
-        print(
-            "Menu:\nR - List required items\nC - List completed items\nA - Add new item\nM - Mark an item as completed\nQ - Quit")
-        choice = input(">>> ")
-
         if choice.upper() == "A":
             name = input("Item name: ")
             price = float(input("Price: $"))
             priority = int(input("Priority (1 - 3, 1 being high): "))
-
             items_list += [[name, price, priority, 'r']]
             print("{}, ${:.2f} (priority {}) added to shopping list".format(name, price, priority))
 
         elif choice.upper() == "C":
-            choice = ""
             print("Completed items:")
-            completed_list = complete_required(items_list, 'c')
-
+            complete_required(items_list, 'c')
 
         elif choice.upper() == "R":
-            choice = ""
             print("Required items:")
-            required_list = complete_required(items_list, 'r')
+            complete_required(items_list, 'r')
 
             '''
             if menu_choice = M
@@ -70,17 +49,21 @@ def main():
                 item list = required items list + completed items list
                 display item is completed
             '''
+        elif choice.upper() == "M":
+            items_list = complete_required(items_list, 'r')
+            if items_list[-1] != 0:
+                print("Enter the number of an item to mark as completed")
+                complete_off = input(">>> ")
+                items_list[int(complete_off)][3] = 'c'
+                items_list = items_list[0:-1]
+                print("{} marked as completed".format(items_list[int(complete_off)][0]))
         else:
             print("Invalid menu choice")
+        choice = get_user_choice()
 
-    file_save = open('items.csv', 'w', newline='')
-    with file_save as csvfile:
-        for i in items_list:
-            write = csv.writer(file_save)
-            write.writerow(i)
-    file_open.close()
-    print("{} items saved to items.csv".format(len(items_list)))
+    file_save(items_list)
     print("Have a nice day :)")
+
 
 def complete_required(array, r_c):
     from operator import itemgetter
@@ -88,21 +71,16 @@ def complete_required(array, r_c):
     r_c_items = []
     rest_items = []
     expected_price = []
-    x = -1
-    name_length = []
-    cost_length = []
-    for i in range(len(array)):
-        name_length += [len(array[i][0])]
-        cost_length += [len(array[i][1])]
-    longest_word_length = max(name_length)
-    max_cost_length = max(cost_length) + 1
+    x = 0
+    longest_word_length = max_char_length(array,0)
+    max_cost_length = max_char_length(array,1) + 1
     for i in range(len(array)):
         if array[i][-1] == r_c:
-            x += 1
             print("{}. {:{}}       $ {:{}.2f} ({})".format(x, array[i][0], int(longest_word_length), float(array[i][1]),
                                                            int(max_cost_length), array[i][2]))
             r_c_items += [array[i]]
             expected_price += [float(array[i][1])]
+            x += 1
         else:
             rest_items += [array[i]]
     if not r_c_items:
@@ -111,7 +89,47 @@ def complete_required(array, r_c):
         else:
             print("No completed items")
     else:
-        print("Total expected price for {} items: ${:.2f}".format(x + 1, sum(expected_price)))
-    return r_c_items + rest_items + [x + 1]
+        print("Total expected price for {} items: ${:.2f}".format(x, sum(expected_price)))
+    return r_c_items + rest_items + [x]
 
+
+def max_char_length(array,index):
+    strings = []
+    for i in range(len(array)):
+        strings += [len(array[i][int(index)])]
+    return max(strings)
+
+def file_load():
+    """
+      #Pseudocode for loading items
+     open “items.csv” as fileIn for reading
+      get items data from fileIn
+      put items data into list
+      close fileIn
+      """
+    import csv
+    items_list = []
+    file_open = open('items.csv')
+    with file_open as csvfile:
+        readCSV = csv.reader(csvfile, delimiter=',')
+        for row in readCSV:
+            items_list += [row]
+    file_open.close()
+    print("{} items loaded from items.csv".format(len(items_list)))
+    return items_list
+
+def file_save(array):
+    import csv
+    file_save = open('items.csv', 'w', newline='')
+    with file_save as csvfile:
+        for i in array:
+            write = csv.writer(file_save)
+            write.writerow(i)
+    file_save.close()
+    print("{} items saved to items.csv".format(len(array)))
+def get_user_choice():
+    print(
+        "Menu:\nR - List required items\nC - List completed items\nA - "
+        "Add new item\nM - Mark an item as completed\nQ - Quit")
+    return input(">>> ")
 main()
