@@ -15,18 +15,18 @@ def main():
     items_list = file_load()
     choice = get_user_choice()
     while choice.upper() != "Q":
-
+        #adding items
         if choice.upper() == "A":
             name = get_item_name()
             price = get_item_price()
             priority = get_item_priority()
             items_list.append([name, str(price), str(priority), 'r'])  # puts item details into array then add to list
             print("{}, ${:.2f} (priority {}) added to shopping list".format(name, price, priority))
-
+        # displaying completed items
         elif choice.upper() == "C":
             print("Completed items:")
             display_items(items_list, 'c')  # function to sort array for completed items
-
+        # displaying required items
         elif choice.upper() == "R":
             print("Required items:")
             display_items(items_list, 'r')  # function to sort array for required items
@@ -50,10 +50,9 @@ def main():
                 set indexed item in required items list to complete
                 item list = required items list + completed items list
                 display item is completed"""
-
+        # setting items to complete
         elif choice.upper() == "M":
             items_list = display_items(items_list, 'r')  # function to sort array for required items
-            print(items_list)
             if items_list[-1] != 0:  # checks if any required items in items list
                 complete_item = get_item_to_complete(items_list)
                 items_list[int(complete_item)][3] = 'c'  # sets item to completed
@@ -146,7 +145,7 @@ def display_items(items_list, display_items_r_or_c):
             expected_price.append(float(items_list[i][1]))
             display_items_count += 1
         else:
-            rest_items.append([items_list[i]])
+            rest_items.append(items_list[i])
     if not displayed_items:
         if display_items_r_or_c == 'r':
             print("No required items")
